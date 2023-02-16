@@ -9,28 +9,46 @@ router.get('/', async (req, res) => {
   const categories = await Category.findAll({
     include: Product
   });
-  res.send( categories)
+  res.send(categories)
 });
 
-router.get('/:id', (req, res) => {
+router.get('/:id', async (req, res) => {
   // find one category by its `id` value
   // be sure to include its associated Products
-  req.params.id
-  res.send("categories ID")
+  const catById = await Category.findOne({
+    include: Product,
+    where: {
+      id: req.params.id
+    }
+  })
+  res.send(catById)
 });
 
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
   // create a new category
-  res.send("Category")
+  const createCat = await Category.create({ category_name: req.body.category_name })
+  res.send(createCat)
 });
 
-router.put('/:id', (req, res) => {
+router.put('/:id', async (req, res) => {
   // update a category by its `id` value
+  const updateCat = await Category.update({ category_name: req.body.category_name },
+    {
+      where: { id: req.params.id }
+    })
 
+  res.send(updateCat)
 });
 
-router.delete('/:id', (req, res) => {
+router.delete('/:id', async (req, res) => {
   // delete a category by its `id` value
+  const deleteCat = await Category.destroy({
+    where: {
+      id: req.params.id
+    }
+  })
+
+  res.sendStatus(200)
 });
 
 module.exports = router;
